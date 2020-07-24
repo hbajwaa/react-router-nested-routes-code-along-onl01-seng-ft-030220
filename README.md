@@ -114,9 +114,9 @@ with the regular `component` prop on `Route`s we've seen before.
 
 So, if the URL path matches `/movies`, the function inside `render` is called.
 The object that is passed in, `routerProps`, gets passed to the `MoviesPage`
-component as props. Using the spread operator (`{...routerProps}`) will result 
-in the creation of props for each key present inside the `routerProps` object. 
-This isn't vital but is a helpful way to pass many props in without too much 
+component as props. Using the spread operator (`{...routerProps}`) will result
+in the creation of props for each key present inside the `routerProps` object.
+This isn't vital but is a helpful way to pass many props in without too much
 code clutter.
 
 So, the component, `MoviesPage`, receives props _from_ the `Route` that contain
@@ -235,14 +235,16 @@ import MoviesList from '../components/MoviesList';
 // import the `MovieShow` component:
 import MovieShow from '../components/MovieShow';
 
-// Here we add `match` to the arguments so we can access the path information 
-// in `routerProps` that is passed from App.js 
+// Here we add `match` to the arguments so we can access the path information
+// in `routerProps` that is passed from App.js
 const MoviesPage = ({ match, movies }) => (
   <div>
     <MoviesList movies={movies} />
     // We also add a `Route` component that will render `MovieShow`
     // when a movie is selected
+
     <Route path={`${match.url}/:movieId`} component={MovieShow}/>
+    <console.log(${match.url})/>
   </div>
 )
 
@@ -283,7 +285,7 @@ export default MoviesList;
 ```
 
 Refresh the page at `/movies`. Now, clicking a link changes the route, but we're
-not actually seeing any content about that movie on our MovieShow page. You should 
+not actually seeing any content about that movie on our MovieShow page. You should
 only see the text `Movies Show Component!` under the navigation and movie links.
 
 Just as we saw with `App`, the data we want to display on a particular
@@ -331,7 +333,7 @@ import MovieShow from '../components/MovieShow';
 const MoviesPage = ({ match, movies }) => (
   <div>
     <MoviesList movies={movies} />
-    // Here we replace the `component` prop with the `render` prop so we can pass the 
+    // Here we replace the `component` prop with the `render` prop so we can pass the
     // route information to the `MovieShow` component
     <Route path={`${match.url}/:movieId`} render={routerProps => <MovieShow {...routerProps} movies={movies} /> }/>
   </div>
@@ -352,12 +354,12 @@ this parameter in conjunction with the `movies` data that was passed down:
 // .src/components/MovieShow.js
 import React from 'react';
 
-// Here we add `match` to the arguments so we can access the path information 
-// in `routerProps` that is passed from MoviesPage.js 
+// Here we add `match` to the arguments so we can access the path information
+// in `routerProps` that is passed from MoviesPage.js
 const MovieShow = ({match, movies}) => {
   return (
     <div>
-      // And here we access the `movieId` stored in match.params to render 
+      // And here we access the `movieId` stored in match.params to render
       // information about the selected movie
       <h3>{ movies[match.params.movieId].title }</h3>
     </div>
@@ -385,7 +387,7 @@ With our main task completed, let's take a quick step back and ask a question -
 what happens in this app when we visit `http://localhost:3000/movies` without a
 particular `movieId` parameter? Well, `MoviesPage` renders due to the top-level
 `/movies` `Route`, but `MoviesPage` will only render `MoviesList`. There is no
-default `Route`, so we don't see anything. If we want to create a default 
+default `Route`, so we don't see anything. If we want to create a default
 `Route` here, we can do so using the `match` prop once again:
 
 ```js
@@ -399,6 +401,7 @@ const MoviesPage = ({ match, movies }) => (
   <div>
     <MoviesList movies={movies} />
     // Adding code to show a message to the user to select a movie if they haven't yet
+    <console.log(match.url);/>
     <Route exact path={match.url} render={() => <h3>Choose a movie from the list above</h3>}/>
     <Route path={`${match.url}/:movieId`} render={routerProps => <MovieShow {...routerProps} movies={movies} /> }/>
   </div>
@@ -418,7 +421,7 @@ To briefly review - we are able to nest `Route`s within each other. Using the
 Router props we receive from the top-level `Route`, we can nest a second `Route`
 that extends the URL path of the first. We can actually nest `Route`s as many
 times as we would like, so if we wanted, we could go fully RESTful and create
-nested `Route`s inside `MovieShow` as well, allowing us to write URL paths that 
+nested `Route`s inside `MovieShow` as well, allowing us to write URL paths that
 would look something like this:
 
 ```test
@@ -429,7 +432,7 @@ To get nested `Route`s to work, we need to utilize route information that is
 stored in the `match` props. `match` contains both the current URL path in
 `match.url`, as well as any parameters in `match.params`. We define the
 parameter names in a `Route`'s path by prepending a colon (`:`) to the front of
-the name. This name will then show up as a key inside `match.params`. 
+the name. This name will then show up as a key inside `match.params`.
 
 We can use parameters to look up specific data - in this case matching the key
 of a `movies` object with the URL parameter, `:movieId`, allowed us to display a
